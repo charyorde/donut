@@ -42,7 +42,7 @@ describe('donut', function() {
 
     var cookcalls = 0
       //, ingredients = ['one', 'two']
-      , ingredients = {one: {"method": "POST"}, two: {"method": "PUT"}}
+      , ingredients = {"v4.2.0": [{one: {"method": "POST"}, two: {"method": "PUT"}}]}
       , funcs = {}
       , tasks = {}
     var cook = function(params) {
@@ -52,7 +52,7 @@ describe('donut', function() {
       console.log("params are: ", params)
       return "params are: " + params
     }
-    _.each(ingredients, function(value, item) {
+    _.each(ingredients["v4.2.0"], function(value, item) {
       funcs[item] = function(fn) {
         cookcalls++   
         console.log("cookcalls called ", cookcalls + " times ")
@@ -61,7 +61,7 @@ describe('donut', function() {
       }
     })
     _.extend(tasks, funcs)
-    console.log(_.extend(tasks, funcs))
+    //console.log(_.extend(tasks, funcs))
     function func3(fn) {
       async.series(tasks, 
         function(err, result) {
@@ -81,5 +81,26 @@ describe('donut', function() {
     console.log(keys)
     keys.should.be.ok
     assert.equal(keys[0], 'top_10_users')
+  })
+  it('should contain some array items', function(done) {
+    var actual = ['name', 'title']
+    var expected = ['username', 'verified']
+    function isFound(item, fn) {
+      console.log('item is', item)
+      if(_.contains(expected, item)) {
+        fn(true)
+      } else {
+        fn(false)
+      }
+    }
+    async.some(actual, isFound, function(result) {
+      if(result) {
+        console.log(result)
+        result.should.be.ok
+      } else {
+        assert.equal(result, true)
+        done()
+      }
+    })
   })
 })

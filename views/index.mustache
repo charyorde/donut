@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Dashboard</title>
+    <!--meta http-equiv="refresh" content="15" /--><!-- temp hack -->
+    <link rel="stylesheet" href="/static/bootstrap.css">
+    <link href="/static/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap.min.js"></script>
+    <script src="/static/jquery.cookie-1.4.1.min.js"></script>
+    <script src="/static/sockjs.min.js"></script>
+    <script src="/static/stomp.min.js"></script>
+    <script src="/static/bootstrap-table-all.min.js"></script>
+    <script>
+      
+      $(document).ready(function() {
+        
+      });
+
+
+      var ws = new SockJS('http://192.168.10.29:15674/stomp');
+      //var ws = new WebSocket('ws://192.168.10.29:15674/ws');
+      var client = Stomp.over(ws);
+      // turn off until rabbitmq-web-stomp 3.6.0 release
+      //client.heartbeat.outgoing = 0;
+      //client.heartbeat.incoming = 0;
+
+      var on_error =  function(err) {
+        console.log('error',err);
+      };
+
+      var on_connect = function(frame) {
+        console.log("connected", frame)
+        client.subscribe('/topic/totalusers', function(msg) {
+          console.log("Browser client received totalusers", msg)
+          //$('.totalusers').text(msg.body)
+        })
+
+        client.subscribe('/topic/activeusers', function(msg) {
+          console.log("Browser client received activeusers", msg)
+          //$('.totalactive').text(msg.body)
+        })
+  
+        /*client.subscribe('/topic/hello', function(msg) {
+          console.log("Browser client received activeusers", msg)
+          $('.totalactive').text(msg.body)
+        })
+        client.send("/topic/hello", {}, 68);*/
+      };
+      client.connect('test', 'Wordpass15', on_connect, on_error, '/');
+    </script>
+  </head>
+  <body>
+    <h2 class="text-center">Donut - Regression &amp; Integration Testing</h2>
+    <div class="container">
+    </div>
+  </body>
+</html>

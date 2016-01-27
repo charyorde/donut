@@ -9,7 +9,7 @@ var server = app.listen(config.port, function () {
   var host = server.address().address
   var port = server.address().port
 
-  console.log('User Account Service app listening at http://%s:%s', host, port)
+  console.log('Donut is cooking at http://%s:%s', host, port)
 
 })
 
